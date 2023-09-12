@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Playerdle</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+	<script src="https://unpkg.com/htmx.org@1.9.5"></script>
+	<link rel="stylesheet" href="styles.css">
+	<script defer>
+		window.onload = () => {
+			document.body.addEventListener("htmx:responseError", (e) => {
+				alert(e.detail.xhr.response)
+			})
+			document.body.addEventListener("acerto", (e) => {
+				alert("Acertou!")
+			})
+			document.body.addEventListener("ja_acertou", (e) => {
+				alert("Você já acertou!")
+			})
+		}
+		function selectText(me){
+			const inp = document.getElementById('textInput')
+			inp.value = me.innerText;
+			me.parentElement.innerHTML = '';
+			inp.focus();
+		}
+	</script>
+</head>
+<body>
+	<div class="descricao">
+		<h1>Playedle</h1>
+		<p>Chute o nome de um jogador para adivinhar o jogador do dia.</p>
+	</div>
+	<div class="game">
+		<div class="search">
+			{% raw %}
+			<form hx-post="/guess" 
+				hx-target="#guess-responses" 
+				hx-swap="beforeend" 
+				hx-on::after-request="if(event.srcElement.nodeName == 'FORM') this.reset()"
+				autocomplete="off">
+				<input type="text" name="name"
+					id="textInput"
+					hx-get="/autocomplete"
+					hx-trigger="keyup changed delay:200ms"
+					hx-target="#dropdown"
+					hx-swap="innerHTML"
+					placeholder="Search..."
+				>
+				<input type="submit">
+			</form>
+			{% endraw %}
+			<ul id="dropdown">
+				<!-- <li @click="inp = $el.innerText, $el.parentElement.innerHTML = ''">STUFF</li> -->
+			</ul>
+		</div>
+		<table class="table-dicas" id="guess-responses">
+			<tr>
+				<th class="table-header-nome">Nome</th>
+				<th>Nacionalidade</th>
+				<th>Posição</th>
+				<th>Equipe</th>
+				<th>Competição</th>
+				<th>Idade</th>
+				<th>Partidas Jogadas</th>
+				<th>Gols Feitos</th>
+			</tr>
+			{% if guesses %}
+				{% for guess in guesses %}
+					{% include "guess_row.html" %}
+				{% endfor %}
+			{% endif %}
+		</table>
+	</div>
+</body>
+</html>

@@ -1,3 +1,9 @@
+:root{
+	--red: rgb(255, 83, 83);
+	--green: rgb(104, 210, 104);
+	--yellow: rgb(255,255,102);
+}
+
 html{
 	font-family: 'Roboto', sans-serif;
 }
@@ -37,6 +43,7 @@ html{
 	padding: 0;
 	margin: 0;
 }
+
 #dropdown li{
 	padding: 5px;
 	border: 1px solid black;
@@ -54,4 +61,14 @@ html{
 }
 .table-dicas .table-header-nome{
 	width: 150px;
+}
+
+.cell-acerto{
+	background-color: var(--green);
+}
+.cell-quase{
+	background-color: var(--yellow);
+}
+.cell-erro{
+	background-color: var(--red);
 }

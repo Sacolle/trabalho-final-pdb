@@ -1,68 +1,72 @@
 <tr>
 	<td 
 		{% if guess.jogador == day_player.jogador %}
-			style="background-color: green;"
+			class="cell-acerto"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.jogador }}
 	</td>
 	<td 
 		{% if guess.nacionalidade == day_player.nacionalidade %}
-			style="background-color: green;"
+			class="cell-acerto"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.nacionalidade }}
 	</td>
 	<td 
 		{% if guess.posicao == day_player.posicao %}
-			style="background-color: green;"
+			class="cell-acerto"
+		{% elif guess.posicao is containing(day_player.posicao) or day_player.posicao is containing(guess.posicao) %}
+			class="cell-quase"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.posicao }}
 	</td>
 	<td 
 		{% if guess.equipe == day_player.equipe %}
-			style="background-color: green;"
+			class="cell-acerto"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.equipe }}
 	</td>
 	<td 
 		{% if guess.competicao == day_player.competicao %}
-			style="background-color: green;"
+			class="cell-acerto"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.competicao }}
 	</td>
 	<td 
-		{% if guess.idade == day_player.idade %}
-			style="background-color: green;"
+		{% set idade_gap =  guess.idade - day_player.idade | abs %}
+		{% if idade_gap == 0 %}
+			class="cell-acerto"
+		{% elif idade_gap < 3 %}
+			class="cell-quase"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.idade }}
-		{% if guess.idade > day_player.idade %}
-			⇓
-		{% elif guess.idade < day_player.idade %}
-			⇑
-		{% endif %}
+		{% if guess.idade > day_player.idade %} ⇓ {% elif guess.idade < day_player.idade %} ⇑ {% endif %}
 	</td>
 	<td 
-		{% if guess.partidas_jogadas == day_player.partidas_jogadas %}
-			style="background-color: green;"
+		{% set partidas_gap =  guess.partidas_jogadas - day_player.partidas_jogadas | abs %}
+		{% if partidas_gap == 0 %}
+			class="cell-acerto"
+		{% elif partidas_gap < 3 %}
+			class="cell-quase"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.partidas_jogadas }}
@@ -73,10 +77,13 @@
 		{% endif %}
 	</td>
 	<td 
-		{% if guess.gols_feitos == day_player.gols_feitos  %}
-			style="background-color: green;"
+		{% set gols_gap =  guess.gols_feitos - day_player.gols_feitos | abs %}
+		{% if gols_gap == 0  %}
+			class="cell-acerto"
+		{% elif gols_gap < 3 %}
+			class="cell-quase"
 		{% else %}
-			style="background-color: red;"
+			class="cell-erro"
 		{% endif %}
 	>
 		{{ guess.gols_feitos  }}

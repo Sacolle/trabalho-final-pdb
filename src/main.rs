@@ -72,20 +72,15 @@ async fn guess_value(req: HttpRequest, web::Form(info): web::Form<NameGuess>, po
 
 #[get("/autocomplete")]
 async fn autocomplete(web::Query(info): web::Query<NameGuess>, pool: web::Data<Pool<MySql>>) -> actix_web::Result<HttpResponse>{
-	let results = queries::query_player_names(&pool, &info.name).await;
-	match results {
-		Ok(res) => {
-			let mut ctx = Context::new();
-			ctx.insert("results", &res);
+	let res = queries::query_player_names(&pool, &info.name).await
+		.map_err(|e|actix_web::error::ErrorBadRequest(e.to_string()))?;
 
-			match TEMPLATES.render("autocomplete_results.html", &ctx){
-				Ok(page) => Ok(HttpResponse::Ok().body(page)),
-				Err(err) => Err(actix_web::error::ErrorInternalServerError(err.to_string()))
-			}
-		},
-		Err(err) => {
-			Err(actix_web::error::ErrorBadRequest(err.to_string()))
-		}
+	let mut ctx = Context::new();
+	ctx.insert("results", &res);
+
+	match TEMPLATES.render("autocomplete_results.html", &ctx){
+		Ok(page) => Ok(HttpResponse::Ok().body(page)),
+		Err(err) => Err(actix_web::error::ErrorInternalServerError(err.to_string()))
 	}
 }
 
